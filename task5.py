@@ -1,16 +1,20 @@
+'''
+input:log-file
+output:printing network topology information and checking for change in topology
+'''
+
 import copy
 import re
 import datetime
-import copy
 import configuration as conf
-import re
+
 
 import matplotlib.dates as md
 import matplotlib.pyplot as plt
 from datetime import datetime
 import math
 import time
-import copy
+
 
 
 def network(fname):
@@ -50,7 +54,6 @@ def network(fname):
     f3=open("temp.txt","r")
     line=f3.readlines()
     f4=open("tmp1.txt","w+")
-    #copy=False
     for i in line:
         for j in range(1,ul[0]+1):
             i=i.strip()
@@ -63,6 +66,7 @@ def network(fname):
     f4=open("tmp1.txt","r")
     lines=f4.readlines()
     pre=""
+    #fetching satellite address,relation,upstream info
     for i in lines:
         for j in range(1,ul[0]+1):
             if re.match(r"^Upstream Device:.*",i)and re.match(r"^#"+str(j)+".*",pre):
@@ -86,6 +90,7 @@ def network(fname):
     
     f=False
     trel=[]
+    #checking if there is any change in topology
     for i in range(0,len(ip)):
         for j in range(1,ul[0]+1):
             if g['rel_%s' % j][i]=="Direct Neighbor" :
@@ -100,7 +105,7 @@ def network(fname):
         else:
             trel.append("Daisy chain")
 
-    
+    #printing the router-satellite connectivities
     for i in range(0,len(ip)):
             print("\niteration ",i+1)
             print("router : "+ip[i]+" is connected to "+str(dno[i])+" satellites ")
@@ -113,6 +118,7 @@ def network(fname):
        
     print("\n")
     m=0
+    #check for change in topology (considering attributes such as MAC address,number_of_satellites,upstream,type_of topology)
     for i in range(1,ul[0]+1):
             if all(ele == g['sat_%s' % str(i)][0] for ele in g['sat_%s' % str(i)]):
                 m+=1
